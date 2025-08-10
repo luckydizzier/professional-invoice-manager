@@ -19,8 +19,8 @@ Go to [GitHub.com](https://github.com) and:
 After creating the repository, GitHub will show you commands. Use these in your terminal:
 
 ```bash
-# Add GitHub remote (replace YOUR_USERNAME with your GitHub username)
-git remote add origin https://github.com/YOUR_USERNAME/professional-invoice-manager.git
+# Add GitHub remote (replace luckydizzier with your GitHub username)
+git remote add origin https://github.com/luckydizzier/professional-invoice-manager.git
 
 # Rename default branch to main (if needed)
 git branch -M main
@@ -123,7 +123,7 @@ GitHub will automatically use the issue templates from the CI/CD setup.
 Name: professional-invoice-manager
 Description: Professional desktop invoice management system with keyboard navigation and VAT calculations
 Topics: invoice, accounting, business, finance, pyqt5, desktop-app, python, vat-calculation, keyboard-navigation, professional-ui, sqlite
-Website: https://github.com/YOUR_USERNAME/professional-invoice-manager
+Website: https://github.com/luckydizzier/professional-invoice-manager
 License: MIT License
 ```
 

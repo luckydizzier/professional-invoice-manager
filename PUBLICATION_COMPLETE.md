@@ -108,7 +108,7 @@ professional-invoice-manager/
 ### Step 2: Connect and Push
 ```bash
 # Add GitHub remote
-git remote add origin https://github.com/YOUR_USERNAME/professional-invoice-manager.git
+git remote add origin https://github.com/luckydizzier/professional-invoice-manager.git
 
 # Push to GitHub
 git push -u origin master
@@ -204,7 +204,7 @@ Your Professional Invoice Manager is now a **production-ready, professionally do
 ### Quick Launch Commands:
 ```bash
 # Create GitHub repo, then:
-git remote add origin https://github.com/YOUR_USERNAME/professional-invoice-manager.git
+git remote add origin https://github.com/luckydizzier/professional-invoice-manager.git
 git push -u origin master
 git tag v2.1.0
 git push origin v2.1.0

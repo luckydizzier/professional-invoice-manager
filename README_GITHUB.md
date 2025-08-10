@@ -32,7 +32,7 @@ A comprehensive, professional-grade invoice management system built with PyQt5 a
 ## 🚀 Quick Start
 
 ### Option 1: Download Executable (Recommended)
-1. Go to [Releases](https://github.com/YOUR_USERNAME/professional-invoice-manager/releases)
+1. Go to [Releases](https://github.com/luckydizzier/professional-invoice-manager/releases)
 2. Download the appropriate package for your operating system:
    - **Windows**: `InvoiceManager-Windows-x64.zip`
    - **Linux**: `InvoiceManager-Linux-x64.tar.gz`
@@ -42,7 +42,7 @@ A comprehensive, professional-grade invoice management system built with PyQt5 a
 ### Option 2: Run from Source
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/professional-invoice-manager.git
+git clone https://github.com/luckydizzier/professional-invoice-manager.git
 cd professional-invoice-manager
 
 # Install Python dependencies
@@ -145,7 +145,7 @@ professional-invoice-manager/
 ### Setting up Development Environment
 ```bash
 # Clone and setup
-git clone https://github.com/YOUR_USERNAME/professional-invoice-manager.git
+git clone https://github.com/luckydizzier/professional-invoice-manager.git
 cd professional-invoice-manager
 
 # Create virtual environment
@@ -200,10 +200,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- **Repository**: https://github.com/YOUR_USERNAME/professional-invoice-manager
-- **Issues**: https://github.com/YOUR_USERNAME/professional-invoice-manager/issues
-- **Releases**: https://github.com/YOUR_USERNAME/professional-invoice-manager/releases
-- **Documentation**: https://github.com/YOUR_USERNAME/professional-invoice-manager/tree/main/docs
+- **Repository**: https://github.com/luckydizzier/professional-invoice-manager
+- **Issues**: https://github.com/luckydizzier/professional-invoice-manager/issues
+- **Releases**: https://github.com/luckydizzier/professional-invoice-manager/releases
+- **Documentation**: https://github.com/luckydizzier/professional-invoice-manager/tree/main/docs
 
 ## 🙏 Acknowledgments
 
@@ -213,12 +213,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📊 Project Stats
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/YOUR_USERNAME/professional-invoice-manager)
-![GitHub](https://img.shields.io/github/license/YOUR_USERNAME/professional-invoice-manager)
-![GitHub top language](https://img.shields.io/github/languages/top/YOUR_USERNAME/professional-invoice-manager)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/YOUR_USERNAME/professional-invoice-manager)
-![GitHub issues](https://img.shields.io/github/issues/YOUR_USERNAME/professional-invoice-manager)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/YOUR_USERNAME/professional-invoice-manager)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/luckydizzier/professional-invoice-manager)
+![GitHub](https://img.shields.io/github/license/luckydizzier/professional-invoice-manager)
+![GitHub top language](https://img.shields.io/github/languages/top/luckydizzier/professional-invoice-manager)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/luckydizzier/professional-invoice-manager)
+![GitHub issues](https://img.shields.io/github/issues/luckydizzier/professional-invoice-manager)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/luckydizzier/professional-invoice-manager)
 
 ---
 
@@ -227,6 +227,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Professional Invoice Manager v2.1.0**  
 *Making business invoicing simple and professional*
 
-[Download](https://github.com/YOUR_USERNAME/professional-invoice-manager/releases) • [Documentation](docs/) • [Issues](https://github.com/YOUR_USERNAME/professional-invoice-manager/issues) • [Contributing](CONTRIBUTING.md)
+[Download](https://github.com/luckydizzier/professional-invoice-manager/releases) • [Documentation](docs/) • [Issues](https://github.com/luckydizzier/professional-invoice-manager/issues) • [Contributing](CONTRIBUTING.md)
 
 </div>
