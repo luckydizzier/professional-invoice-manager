@@ -1,0 +1,29 @@
+{
+    "database": {
+        "path": "invoice_qt5.db",
+        "backup_enabled": true,
+        "backup_interval_hours": 24,
+        "max_backups": 10
+    },
+    "ui": {
+        "theme": "default",
+        "window_width": 1200,
+        "window_height": 960,
+        "remember_window_size": true,
+        "show_tooltips": true,
+        "confirm_deletions": true
+    },
+    "business": {
+        "company_name": "",
+        "company_address": "",
+        "company_tax_id": "",
+        "default_vat_rate": 27,
+        "currency": "HUF",
+        "invoice_number_prefix": "INV"
+    },
+    "export": {
+        "default_format": "pdf",
+        "auto_open_after_export": true,
+        "export_directory": "exports"
+    }
+}

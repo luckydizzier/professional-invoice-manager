@@ -1,0 +1,224 @@
+/* Dialog Styles */
+
+/* Base Dialog Styling */
+QDialog {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+}
+
+/* Confirmation Dialog */
+QDialog#confirmDialog {
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+}
+
+QDialog#confirmDialog QLabel {
+    color: #414952;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px;
+    background-color: transparent;
+}
+
+QDialog#confirmDialog QLabel#message {
+    font-size: 16px;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+QDialog#confirmDialog QLabel#instructions {
+    font-size: 12px;
+    color: #6c757d;
+    font-style: italic;
+    border-top: 1px solid #e9ecef;
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+/* List Selection Dialog */
+QDialog#listSelectDialog {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+}
+
+QDialog#listSelectDialog QLabel#title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+QDialog#listSelectDialog QLabel#instructions {
+    font-size: 12px;
+    color: #6b7280;
+    background-color: #f9fafb;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+/* Form Dialog */
+QDialog#formDialog {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    min-width: 400px;
+}
+
+QDialog#formDialog QLabel#formHeader {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+QDialog#formDialog QLabel#fieldLabel {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+QDialog#formDialog QLabel#errorLabel {
+    font-size: 12px;
+    color: #dc2626;
+    margin-top: 4px;
+}
+
+/* Settings Dialog */
+QDialog#settingsDialog {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    min-width: 500px;
+    min-height: 400px;
+}
+
+QDialog#settingsDialog QTabWidget {
+    border: none;
+}
+
+QDialog#settingsDialog QTabWidget::pane {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background-color: #ffffff;
+    margin-top: 8px;
+}
+
+QDialog#settingsDialog QTabBar::tab {
+    background-color: #f9fafb;
+    color: #6b7280;
+    padding: 10px 16px;
+    margin-right: 2px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    font-weight: 500;
+}
+
+QDialog#settingsDialog QTabBar::tab:selected {
+    background-color: #ffffff;
+    color: #111827;
+    border-bottom: 2px solid #3b82f6;
+}
+
+QDialog#settingsDialog QTabBar::tab:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+/* Group Box */
+QGroupBox {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    margin-top: 12px;
+    padding-top: 8px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 8px;
+    padding: 0 8px;
+    background-color: #ffffff;
+}
+
+/* Checkbox and Radio Button */
+QCheckBox, QRadioButton {
+    font-size: 14px;
+    color: #374151;
+    spacing: 8px;
+}
+
+QCheckBox::indicator, QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #d1d5db;
+    border-radius: 3px;
+    background-color: #ffffff;
+}
+
+QCheckBox::indicator:checked, QRadioButton::indicator:checked {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+QCheckBox::indicator:hover, QRadioButton::indicator:hover {
+    border-color: #6b7280;
+}
+
+QRadioButton::indicator {
+    border-radius: 8px;
+}
+
+/* Scroll Bar */
+QScrollBar:vertical {
+    border: none;
+    background-color: #f9fafb;
+    width: 12px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #d1d5db;
+    border-radius: 6px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #9ca3af;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    border: none;
+    background: none;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background-color: #f9fafb;
+    height: 12px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: #d1d5db;
+    border-radius: 6px;
+    min-width: 20px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background-color: #9ca3af;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    border: none;
+    background: none;
+}
