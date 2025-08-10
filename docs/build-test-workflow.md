@@ -21,4 +21,4 @@ Execute the test suite:
 pytest
 ```
 
-See [styleguide.md](styleguide.md) for coding conventions.
+See [styleguide.md](docs/styleguide.md) for coding conventions.
