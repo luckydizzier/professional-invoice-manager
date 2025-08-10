@@ -10,6 +10,9 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+# Ensure src package is importable
+sys.path.insert(0, str(Path(__file__).parent / "src"))
+
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QStackedWidget, QVBoxLayout, QHBoxLayout,
@@ -22,7 +25,7 @@ from PyQt5.QtGui import QKeySequence
 
 # Load configuration with fallback
 try:
-    from config import config
+    from professional_invoice_manager.config import config
 except ImportError:
     class SimpleConfig:
         def get(self, key, default=None):

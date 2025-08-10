@@ -6,11 +6,10 @@ It sets the **context load order**, **allowed changes**, **output contracts**, a
 ## 📚 Context Load Order
 Agents must load and respect sources in the following priority:
 1. `AGENTS.md` (this file)
-2. `docs/styleguide.md`
-3. `README.md`
+2. `README.md`
+3. Additional docs in `docs/**`
 4. Relevant module code (src/**)
 5. Related tests (tests/**)
-6. Additional docs in `docs/**`
 ---
 ## 🚫 Allowed & Forbidden Paths
 ### Allowed
@@ -57,8 +56,8 @@ Refs: <issue or task id>
 ## ✅ Definition of Done (DoD)
 A task is **DONE** only if:
 1. Build passes without errors.
-2. All tests pass (`dotnet test` / `npm test` / project-specific).
-3. Lint/style checks pass according to `docs/styleguide.md`.
+2. All tests pass (`pytest` or project-specific).
+3. Lint/style checks pass.
 4. All output contract files are produced and valid.
 5. Backwards compatibility preserved, or breaking changes clearly documented.
 ---
@@ -70,12 +69,8 @@ A task is **DONE** only if:
 ## 🧪 Verification Commands Example (`COMMANDS.sh`)
 #!/usr/bin/env bash
 set -euo pipefail
-dotnet build
-dotnet test --logger "trx;LogFileName=test.trx"
-# Or for JS/TS:
-# npm ci
-# npm run lint
-# npm test
+python -m flake8 src tests
+pytest
 🛠 Fail-Fast / Ask Threshold
 If uncertainty > 20% or context is missing → Ask once before execution.
 If no reply is possible → Proceed by best inference and clearly mark all assumptions in SUMMARY.md.
