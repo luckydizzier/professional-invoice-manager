@@ -7,8 +7,10 @@ Launch script with proper error handling and keyboard navigation
 import sys
 from pathlib import Path
 
-# Add current directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
+# Add project and src directories to path for imports
+ROOT = Path(__file__).parent
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "src"))
 
 def main():
     """Main application launcher with comprehensive error handling"""

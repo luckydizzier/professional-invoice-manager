@@ -1,0 +1,1 @@
+"""Professional Invoice Manager package"""
