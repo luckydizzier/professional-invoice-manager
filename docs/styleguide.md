@@ -1,11 +1,12 @@
 # Style Guide
 
 ## Python
-- Follow [PEP 8](https://peps.python.org/pep-0008/) and enforce with `flake8`.
+- Follow [PEP 8](https://peps.python.org/pep-0008/) and enforce with `flake8` using the shared configuration file (e.g., `.flake8` or `setup.cfg`).
 - Maximum line length: 79 characters.
 - Sort imports alphabetically using `isort`.
 - Write clear names and docstrings for modules, classes, and functions.
 - Avoid unused variables and committed build artifacts.
+- Use the `.flake8` or `setup.cfg` file in the repository to ensure consistent linting rules.
 
 ## Git
 - Commit message format: `<scope>: <imperative summary>`.
