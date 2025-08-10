@@ -250,4 +250,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔧 Development
 
-See the [Technical Specification](docs/technical-specification.md) for detailed architecture information and the [Porting Guide](docs/porting-guide.md) for implementation in other languages.
+See the [Technical Specification](docs/technical-specification.md) for detailed
+architecture information and the [Porting Guide](docs/porting-guide.md) for
+implementation in other languages.
+
+Refer to [build-test-workflow.md](docs/build-test-workflow.md) for build and
+test instructions. Basic commands:
+
+```
+python -m flake8 src tests
+pytest
+```

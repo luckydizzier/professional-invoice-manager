@@ -2,7 +2,7 @@
 
 ## Milestone 1: Establish Standards
 - [x] Add Style Guide
-- [ ] Document Build/Test Workflow
+- [x] Document Build/Test Workflow
 
 ## Milestone 2: Improve Test Coverage
 - [ ] Refactor Tests to Use Assertions
