@@ -10,6 +10,9 @@
 
 ## Git
 - Commit message format: `<scope>: <imperative summary>`.
+  Examples:
+    - `feat: add user authentication`
+    - `fix: resolve database connection timeout`
 - Reference issues or tasks on a new line: `Refs: <id>`.
 - Keep commits focused and atomic.
 
