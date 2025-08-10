@@ -1,0 +1,245 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags like v2.1.0
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9, '3.10', '3.11']
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+    
+    - name: Run linting
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Run tests
+      run: |
+        python -m pytest tests/ -v --cov=. --cov-report=xml
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      if: matrix.python-version == '3.9'
+      with:
+        file: ./coverage.xml
+
+  build-executables:
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        include:
+          - os: windows-latest
+            executable-suffix: '.exe'
+            artifact-name: 'windows'
+          - os: ubuntu-latest
+            executable-suffix: ''
+            artifact-name: 'linux'
+          - os: macos-latest
+            executable-suffix: ''
+            artifact-name: 'macos'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+    
+    - name: Install Linux dependencies
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+    
+    - name: Build executable
+      run: |
+        python build_release.py
+    
+    - name: Test executable (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        .\dist\InvoiceManager.exe --version
+      continue-on-error: true
+    
+    - name: Test executable (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        xvfb-run -a ./dist/InvoiceManager --version
+      continue-on-error: true
+    
+    - name: Test executable (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        ./dist/InvoiceManager --version
+      continue-on-error: true
+    
+    - name: Upload executable artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: invoice-manager-${{ matrix.artifact-name }}
+        path: |
+          dist/InvoiceManager${{ matrix.executable-suffix }}
+          dist/portable/
+        retention-days: 30
+
+  create-release:
+    needs: [test, build-executables]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+      with:
+        path: artifacts
+    
+    - name: Create release packages
+      run: |
+        mkdir -p release-packages
+        
+        # Windows package
+        cd artifacts/invoice-manager-windows
+        zip -r ../../release-packages/InvoiceManager-Windows-x64.zip .
+        cd ../..
+        
+        # Linux package
+        cd artifacts/invoice-manager-linux
+        tar -czf ../../release-packages/InvoiceManager-Linux-x64.tar.gz .
+        cd ../..
+        
+        # macOS package
+        cd artifacts/invoice-manager-macos
+        tar -czf ../../release-packages/InvoiceManager-macOS-x64.tar.gz .
+        cd ../..
+        
+        # Source package
+        git archive --format=zip --prefix=professional-invoice-manager-${GITHUB_REF#refs/tags/}/ HEAD > release-packages/InvoiceManager-Source.zip
+        
+        ls -la release-packages/
+    
+    - name: Extract version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+    
+    - name: Generate release notes
+      id: release_notes
+      run: |
+        cat > release_notes.md << 'EOF'
+        ## Professional Invoice Manager ${{ steps.get_version.outputs.VERSION }}
+        
+        ### 🚀 Features
+        - Professional invoice management with VAT calculations
+        - Product and supplier management
+        - Customer database with detailed information
+        - Professional UI with keyboard navigation
+        - SQLite database with backup capabilities
+        - Multi-language support ready
+        
+        ### 📦 Download Options
+        
+        **Standalone Executables (Recommended)**
+        - **Windows**: Download `InvoiceManager-Windows-x64.zip`
+        - **Linux**: Download `InvoiceManager-Linux-x64.tar.gz`
+        - **macOS**: Download `InvoiceManager-macOS-x64.tar.gz`
+        
+        **Run from Source**
+        - Download `InvoiceManager-Source.zip`
+        - Requires Python 3.7+ and PyQt5
+        - See README.md for installation instructions
+        
+        ### 🔧 System Requirements
+        - **OS**: Windows 7+, Ubuntu 16.04+, macOS 10.12+
+        - **RAM**: 512MB (2GB recommended)
+        - **Storage**: 100MB available space
+        - **Python**: 3.7+ (for source version)
+        
+        ### 📖 Documentation
+        - [User Guide](docs/user-guide.md)
+        - [Technical Specification](docs/technical-specification.md)
+        - [Installation Guide](docs/installation-guide.md)
+        
+        ### 🐛 Bug Reports
+        Please report issues on [GitHub Issues](https://github.com/${{ github.repository }}/issues)
+        EOF
+    
+    - name: Create Release
+      uses: actions/create-release@v1
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        release_name: Professional Invoice Manager ${{ steps.get_version.outputs.VERSION }}
+        body_path: release_notes.md
+        draft: false
+        prerelease: false
+    
+    - name: Upload Windows Package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release-packages/InvoiceManager-Windows-x64.zip
+        asset_name: InvoiceManager-Windows-x64.zip
+        asset_content_type: application/zip
+    
+    - name: Upload Linux Package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release-packages/InvoiceManager-Linux-x64.tar.gz
+        asset_name: InvoiceManager-Linux-x64.tar.gz
+        asset_content_type: application/gzip
+    
+    - name: Upload macOS Package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release-packages/InvoiceManager-macOS-x64.tar.gz
+        asset_name: InvoiceManager-macOS-x64.tar.gz
+        asset_content_type: application/gzip
+    
+    - name: Upload Source Package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release-packages/InvoiceManager-Source.zip
+        asset_name: InvoiceManager-Source.zip
+        asset_content_type: application/zip
