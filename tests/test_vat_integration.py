@@ -20,7 +20,13 @@ def test_application_launch_with_vat_summary():
     main_window = MainWindow()
     page = main_window.invoice_list_page
 
-    detail_widget = page.detail_widget
+    # Simulate the original object hierarchy
+    class Window:
+        pass
+    window = Window()
+    window.invoice_page = page
+
+    detail_widget = window.invoice_page.detail_widget
     assert hasattr(detail_widget, "vat_table")
     assert detail_widget.vat_table.columnCount() > 0
     assert hasattr(detail_widget, "update_vat_summary")
