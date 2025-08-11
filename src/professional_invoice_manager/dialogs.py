@@ -1,5 +1,8 @@
 """Dialog classes for user interactions."""
 
+import logging
+import sqlite3
+
 from PyQt5.QtWidgets import (
     QComboBox,
     QDialog,
@@ -115,7 +118,9 @@ class InvoiceFormDialog(QDialog):
     def __init__(self, invoice_data=None, parent=None):
         super().__init__(parent)
         self.invoice_data = invoice_data
-        title = "🧾 Számla" + (" szerkesztése" if invoice_data else " létrehozása")
+        title = "🧾 Számla" + (
+            " szerkesztése" if invoice_data else " létrehozása"
+        )
         self.setWindowTitle(title)
         self.setup_ui()
         if invoice_data:
@@ -134,7 +139,9 @@ class InvoiceFormDialog(QDialog):
 
         layout.addLayout(form)
 
-        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
@@ -147,7 +154,13 @@ class InvoiceFormDialog(QDialog):
                 ).fetchall()
                 for row in rows:
                     self.partner_combo.addItem(row["name"], row["id"])
-        except Exception:
+        except sqlite3.Error:
+            logging.exception("Failed to load partners")
+            QMessageBox.warning(
+                self,
+                "Hiba",
+                "Nem sikerült betölteni a partnereket.",
+            )
             self.partner_combo.clear()
 
     def load_data(self):
@@ -182,7 +195,9 @@ class ProductFormDialog(QDialog):
     def __init__(self, product_data=None, parent=None):
         super().__init__(parent)
         self.product_data = product_data
-        title = "🛍️ Termék" + (" szerkesztése" if product_data else " hozzáadása")
+        title = "🛍️ Termék" + (
+            " szerkesztése" if product_data else " hozzáadása"
+        )
         self.setWindowTitle(title)
         self.setup_ui()
         if product_data:
@@ -207,7 +222,9 @@ class ProductFormDialog(QDialog):
 
         layout.addLayout(form)
 
-        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        )
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
@@ -240,6 +257,8 @@ class ProductFormDialog(QDialog):
             QMessageBox.warning(self, "Hiba", "A név mező kitöltése kötelező!")
             return
         if data["unit_price_cents"] <= 0:
-            QMessageBox.warning(self, "Hiba", "Az ár nagyobb kell legyen nullánál!")
+            QMessageBox.warning(
+                self, "Hiba", "Az ár nagyobb kell legyen nullánál!"
+            )
             return
         super().accept()

@@ -1,10 +1,12 @@
+import logging
 import os
-import sys
 from pathlib import Path
+import sqlite3
+import sys
 import time
 
-import pytest
 from PyQt5.QtWidgets import QApplication
+import pytest
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
@@ -13,6 +15,7 @@ from main_with_management import (  # noqa: E402
     init_database,
     MainWindow,
 )
+import professional_invoice_manager.dialogs as dialogs  # noqa: E402
 from professional_invoice_manager.dialogs import (  # noqa: E402
     InvoiceFormDialog,
     PartnerFormDialog,
@@ -104,3 +107,26 @@ def test_management_pages(app):
     assert PartnerListPage("customer") is not None
     assert PartnerListPage("supplier") is not None
     assert InvoiceListPage() is not None
+
+
+def test_load_partners_db_error(monkeypatch, caplog, app):
+    def raise_error():
+        raise sqlite3.Error("boom")
+
+    warned = {}
+
+    def fake_warning(*args, **kwargs):
+        warned["called"] = True
+
+    monkeypatch.setattr(dialogs, "get_db", raise_error)
+    monkeypatch.setattr(
+        dialogs.QMessageBox, "warning", staticmethod(fake_warning)
+    )
+    with caplog.at_level(logging.ERROR):
+        dialog = InvoiceFormDialog()
+    assert dialog.partner_combo.count() == 0
+    assert warned.get("called")
+    assert any(
+        "Failed to load partners" in record.message
+        for record in caplog.records
+    )
