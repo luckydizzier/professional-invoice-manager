@@ -11,12 +11,16 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 from main_with_management import (  # noqa: E402
     get_db,
     init_database,
-    InvoiceFormDialog,
-    InvoiceListPage,
     MainWindow,
+)
+from professional_invoice_manager.dialogs import (  # noqa: E402
+    InvoiceFormDialog,
     PartnerFormDialog,
-    PartnerListPage,
     ProductFormDialog,
+)
+from professional_invoice_manager.pages import (  # noqa: E402
+    InvoiceListPage,
+    PartnerListPage,
     ProductListPage,
 )
 

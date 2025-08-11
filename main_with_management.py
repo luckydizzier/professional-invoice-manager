@@ -43,7 +43,17 @@ except ImportError:
     config = SimpleConfig()
 
 from professional_invoice_manager.db import get_db, init_database
-from professional_invoice_manager.dialogs import PartnerFormDialog
+from professional_invoice_manager.dialogs import (
+    InvoiceFormDialog,
+    PartnerFormDialog,
+    ProductFormDialog,
+)
+from professional_invoice_manager.pages import (
+    InvoiceDetailWidget,
+    InvoiceListPage,
+    PartnerListPage,
+    ProductListPage,
+)
 
 
 def format_date(timestamp_or_str):
@@ -63,7 +73,7 @@ def format_date(timestamp_or_str):
         return str(timestamp_or_str)
  
 
-class InvoiceFormDialog(QDialog):
+class _InvoiceFormDialogOld(QDialog):
     """Invoice creation/editing dialog"""
     
     def __init__(self, invoice_data=None, parent=None):
@@ -182,7 +192,7 @@ class InvoiceFormDialog(QDialog):
         super().accept()
 
 
-class ProductFormDialog(QDialog):
+class _ProductFormDialogOld(QDialog):
     """Product management dialog"""
     
     def __init__(self, product_data=None, parent=None):
@@ -297,7 +307,7 @@ class ProductFormDialog(QDialog):
 
 
 
-class ManagementListPage(QWidget):
+class _ManagementListPageOld(QWidget):
     """Base class for product/partner management pages"""
     
     def __init__(self, title, headers, parent=None):
@@ -434,7 +444,7 @@ class ManagementListPage(QWidget):
                                "Ez a funkció nincs implementálva ebben az osztályban.")
 
 
-class ProductListPage(ManagementListPage):
+class _ProductListPageOld(_ManagementListPageOld):
     """Product management page"""
     
     def __init__(self, parent=None):
@@ -571,7 +581,7 @@ class ProductListPage(ManagementListPage):
                 QMessageBox.warning(self, "Hiba", f"Termék törlése sikertelen: {str(e)}")
 
 
-class PartnerListPage(ManagementListPage):
+class _PartnerListPageOld(_ManagementListPageOld):
     """Partner management page"""
     
     def __init__(self, partner_type="customer", parent=None):
@@ -702,7 +712,7 @@ class PartnerListPage(ManagementListPage):
                 QMessageBox.warning(self, "Hiba", f"Partner törlése sikertelen: {str(e)}")
 
 
-class InvoiceDetailWidget(QWidget):
+class _InvoiceDetailWidgetOld(QWidget):
     """Widget for displaying invoice details and items"""
     
     def __init__(self, parent=None):
@@ -1279,7 +1289,7 @@ class InvoiceItemDialog(QDialog):
             QMessageBox.critical(self, "Hiba", f"Tétel mentése sikertelen: {str(e)}")
 
 
-class InvoiceListPage(QWidget):
+class _InvoiceListPageOld(QWidget):
     """Invoice management page with two-column layout"""
     
     def __init__(self, parent=None):
@@ -1391,7 +1401,7 @@ class InvoiceListPage(QWidget):
         main_layout.addWidget(left_widget)
         
         # Right column - Invoice details
-        self.detail_widget = InvoiceDetailWidget(self)
+        self.detail_widget = _InvoiceDetailWidgetOld(self)
         main_layout.addWidget(self.detail_widget, 2)  # Give more space to details
         
         # Initially disable edit/delete buttons

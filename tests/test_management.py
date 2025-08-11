@@ -13,6 +13,8 @@ from main_with_management import (  # noqa: E402
     get_db,
     init_database,
     MainWindow,
+)
+from professional_invoice_manager.dialogs import (  # noqa: E402
     PartnerFormDialog,
     ProductFormDialog,
 )
