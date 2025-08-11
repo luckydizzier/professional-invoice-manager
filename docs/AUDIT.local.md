@@ -6,6 +6,10 @@
 
 ## Milestone 2: Improve Test Coverage
 - [ ] Refactor Tests to Use Assertions
+  - [x] tests/test_vat_integration.py
+  - [ ] tests/test_vat_features.py
+  - [ ] tests/test_management.py
+  - [ ] tests/test_implementation.py
 - [ ] Introduce Mocked Database Fixtures
 
 ## Milestone 3: Modularize Application Code
