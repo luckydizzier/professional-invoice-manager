@@ -1,6 +1,7 @@
 # Build and Test Workflow
 
 Follow these steps to prepare the environment, lint the code, and run tests.
+Refer to the [Style Guide](styleguide.md) for coding conventions.
 
 ## Environment Setup
 - Create a virtual environment.
@@ -21,4 +22,3 @@ Execute the test suite:
 pytest
 ```
 
-See [styleguide.md](docs/styleguide.md) for coding conventions.
