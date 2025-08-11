@@ -248,16 +248,26 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 └── README.md                  # This file
 ```
 
+## 🧪 Build and Test Workflow
+
+1. Create and activate a virtual environment.
+2. Install development dependencies:
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+3. Lint the code:
+   ```bash
+   python -m flake8 src tests
+   ```
+4. Run the test suite:
+   ```bash
+   pytest
+   ```
+For more details, see
+[docs/build-test-workflow.md](docs/build-test-workflow.md).
+
 ## 🔧 Development
 
 See the [Technical Specification](docs/technical-specification.md) for detailed
 architecture information and the [Porting Guide](docs/porting-guide.md) for
 implementation in other languages.
-
-Refer to [build-test-workflow.md](docs/build-test-workflow.md) for build and
-test instructions. Basic commands:
-
-```
-python -m flake8 src tests
-pytest
-```
