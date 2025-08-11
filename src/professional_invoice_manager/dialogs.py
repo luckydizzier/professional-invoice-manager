@@ -22,9 +22,8 @@ class PartnerFormDialog(QDialog):
         self.partner_type = partner_type
 
         type_text = "Vevő" if partner_type == "customer" else "Beszállító"
-        self.setWindowTitle(
-            f"👤 {type_text}{' szerkesztése' if partner_data else ' hozzáadása'}"
-        )
+        title_suffix = " szerkesztése" if partner_data else " hozzáadása"
+        self.setWindowTitle(f"👤 {type_text}{title_suffix}")
         self.setModal(True)
         self.resize(500, 400)
         self.setup_ui()
