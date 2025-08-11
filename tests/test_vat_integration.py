@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from PyQt5.QtWidgets import QApplication  # noqa: E402
-from main_with_management import InvoiceListPage, init_database  # noqa: E402
+from main_with_management import MainWindow, init_database  # noqa: E402
 
 
 def test_application_launch_with_vat_summary():
