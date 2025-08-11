@@ -1,243 +1,121 @@
-#!/usr/bin/env python3
-"""
-Complete Implementation Test
-Tests all implemented functionality including invoice management
-"""
-import sys
+import os
 import sqlite3
+import sys
 from pathlib import Path
+import time
 
-# Add current directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
+import pytest
+from PyQt5.QtWidgets import QApplication
 
-def test_invoice_functionality():
-    """Test invoice management functionality"""
-    print("🧾 Testing Invoice Management...")
-    
-    try:
-        from main_with_management import get_db, InvoiceFormDialog, init_database
-        
-        # Initialize database
-        init_database()
-        
-        # Test database connection and invoice table
-        with get_db() as conn:
-            # Check if invoice table exists and has correct structure
-            cursor = conn.execute("PRAGMA table_info(invoice)")
-            columns = [row[1] for row in cursor.fetchall()]
-            
-            required_columns = ['id', 'number', 'direction', 'partner_id', 'created_utc']
-            missing_columns = [col for col in required_columns if col not in columns]
-            
-            if missing_columns:
-                print(f"❌ Missing columns in invoice table: {missing_columns}")
-                return False
-            
-            print("✅ Invoice table structure is correct")
-            
-            # Count existing invoices
-            invoice_count = conn.execute("SELECT COUNT(*) FROM invoice").fetchone()[0]
-            print(f"📊 Invoices in database: {invoice_count}")
-            
-            # Test creating a sample invoice (if partners exist)
-            partner_count = conn.execute("SELECT COUNT(*) FROM partner").fetchone()[0]
-            if partner_count > 0:
-                partner = conn.execute("SELECT id, name FROM partner LIMIT 1").fetchone()
-                
-                # Insert a test invoice
-                test_number = f"TEST-{int(__import__('time').time())}"
-                conn.execute("""
-                    INSERT INTO invoice (number, direction, partner_id, created_utc)
-                    VALUES (?, ?, ?, ?)
-                """, (test_number, 'sale', partner['id'], int(__import__('time').time())))
-                conn.commit()
-                
-                print(f"✅ Test invoice '{test_number}' created successfully")
-                
-                # Clean up test invoice
-                conn.execute("DELETE FROM invoice WHERE number = ?", (test_number,))
-                conn.commit()
-                print("🧹 Test invoice cleaned up")
-            else:
-                print("⚠️ No partners available for invoice testing")
-        
-        print("✅ Invoice functionality test passed!")
-        return True
-        
-    except Exception as e:
-        print(f"❌ Invoice functionality test failed: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return False
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-def test_all_dialog_classes():
-    """Test that all dialog classes can be imported and instantiated"""
-    print("🔧 Testing Dialog Classes...")
-    
-    try:
-        from main_with_management import (
-            InvoiceFormDialog, ProductFormDialog, PartnerFormDialog,
-            QApplication
+import main_with_management as mwm  # noqa: E402
+from main_with_management import (  # noqa: E402
+    InvoiceFormDialog,
+    InvoiceListPage,
+    MainWindow,
+    PartnerFormDialog,
+    PartnerListPage,
+    ProductFormDialog,
+    ProductListPage,
+)
+
+
+@pytest.fixture(scope="module")
+def app():
+    """Provide a shared QApplication instance."""
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    app = QApplication.instance()
+    if app is None:
+        app = QApplication([])
+    yield app
+
+
+@pytest.fixture()
+def isolated_db(tmp_path, monkeypatch):
+    """Return a temporary database and patch ``mwm.get_db`` to use it.
+
+    Each test receives its own SQLite file under ``tmp_path`` to keep
+    database state isolated. This fixture is not safe for concurrent
+    tests unless a fresh database is provided for each test run.
+    """
+    db_file = tmp_path / "test.db"
+
+    def _get_db():
+        conn = sqlite3.connect(db_file)
+        conn.row_factory = sqlite3.Row
+        return conn
+
+    monkeypatch.setattr(mwm, "get_db", _get_db)
+    return db_file
+
+
+def test_invoice_functionality(isolated_db):
+    """Invoice table has required columns and supports inserts."""
+    mwm.init_database()
+    with mwm.get_db() as conn:
+        cursor = conn.execute("PRAGMA table_info(invoice)")
+        columns = [row[1] for row in cursor.fetchall()]
+        for col in [
+            "id",
+            "number",
+            "direction",
+            "partner_id",
+            "created_utc",
+        ]:
+            assert col in columns
+
+        invoice_count = conn.execute(
+            "SELECT COUNT(*) FROM invoice"
+        ).fetchone()[0]
+        assert invoice_count >= 0
+
+        partner = conn.execute("SELECT id FROM partner LIMIT 1").fetchone()
+        assert partner is not None
+
+        test_number = f"TEST-{int(time.time())}"
+        conn.execute(
+            "INSERT INTO invoice (number, direction, partner_id, created_utc) "
+            "VALUES (?, ?, ?, ?)",
+            (test_number, "sale", partner["id"], int(time.time())),
         )
-        
-        # Create a minimal QApplication for testing
-        app = QApplication.instance()
-        if app is None:
-            app = QApplication(sys.argv)
-        
-        # Test InvoiceFormDialog
-        invoice_dialog = InvoiceFormDialog()
-        print("✅ InvoiceFormDialog can be instantiated")
-        
-        # Test ProductFormDialog
-        product_dialog = ProductFormDialog()
-        print("✅ ProductFormDialog can be instantiated")
-        
-        # Test PartnerFormDialog
-        partner_dialog = PartnerFormDialog()
-        print("✅ PartnerFormDialog can be instantiated")
-        
-        print("✅ All dialog classes working!")
-        return True
-        
-    except Exception as e:
-        print(f"❌ Dialog class test failed: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return False
+        conn.commit()
+        inserted = conn.execute(
+            "SELECT COUNT(*) FROM invoice WHERE number = ?",
+            (test_number,),
+        ).fetchone()[0]
+        assert inserted == 1
+        conn.execute("DELETE FROM invoice WHERE number = ?", (test_number,))
+        conn.commit()
 
-def test_main_window_functionality():
-    """Test MainWindow class functionality"""
-    print("🏠 Testing MainWindow...")
-    
-    try:
-        from main_with_management import MainWindow, QApplication
-        
-        # Create a minimal QApplication for testing
-        app = QApplication.instance()
-        if app is None:
-            app = QApplication(sys.argv)
-        
-        # Test MainWindow instantiation
-        window = MainWindow()
-        print("✅ MainWindow can be instantiated")
-        
-        # Test that all required methods exist
-        required_methods = [
-            'new_invoice', 'new_product', 'new_customer', 'new_supplier',
-            'show_list', 'show_products', 'show_customers', 'show_suppliers'
-        ]
-        
-        for method_name in required_methods:
-            if hasattr(window, method_name):
-                print(f"✅ Method {method_name} exists")
-            else:
-                print(f"❌ Method {method_name} missing")
-                return False
-        
-        print("✅ MainWindow functionality test passed!")
-        return True
-        
-    except Exception as e:
-        print(f"❌ MainWindow test failed: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return False
 
-def test_management_pages():
-    """Test management page classes"""
-    print("📋 Testing Management Pages...")
-    
-    try:
-        from main_with_management import (
-            ProductListPage, PartnerListPage, InvoiceListPage,
-            QApplication
-        )
-        
-        # Create a minimal QApplication for testing
-        app = QApplication.instance()
-        if app is None:
-            app = QApplication(sys.argv)
-        
-        # Test ProductListPage
-        product_page = ProductListPage()
-        print("✅ ProductListPage can be instantiated")
-        
-        # Test PartnerListPage - customers
-        customer_page = PartnerListPage("customer")
-        print("✅ Customer PartnerListPage can be instantiated")
-        
-        # Test PartnerListPage - suppliers
-        supplier_page = PartnerListPage("supplier")
-        print("✅ Supplier PartnerListPage can be instantiated")
-        
-        # Test InvoiceListPage
-        invoice_page = InvoiceListPage()
-        print("✅ InvoiceListPage can be instantiated")
-        
-        print("✅ All management pages working!")
-        return True
-        
-    except Exception as e:
-        print(f"❌ Management pages test failed: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return False
+def test_all_dialog_classes(app):
+    """Dialog classes can be instantiated."""
+    assert InvoiceFormDialog() is not None
+    assert ProductFormDialog() is not None
+    assert PartnerFormDialog() is not None
 
-def main():
-    """Main test function"""
-    print("🚀 Complete Implementation Test")
-    print("=" * 60)
-    print("Testing all implemented functionality...")
-    print()
-    
-    tests = [
-        test_invoice_functionality,
-        test_all_dialog_classes,
-        test_main_window_functionality,
-        test_management_pages
+
+def test_main_window_functionality(app):
+    """MainWindow exposes required methods."""
+    window = MainWindow()
+    required_methods = [
+        "new_invoice",
+        "new_product",
+        "new_customer",
+        "new_supplier",
+        "show_list",
+        "show_products",
+        "show_customers",
+        "show_suppliers",
     ]
-    
-    passed = 0
-    failed = 0
-    
-    for test_func in tests:
-        print()
-        try:
-            if test_func():
-                passed += 1
-            else:
-                failed += 1
-        except Exception as e:
-            print(f"❌ Test {test_func.__name__} crashed: {str(e)}")
-            failed += 1
-        print("-" * 40)
-    
-    print()
-    print(f"📊 Test Results:")
-    print(f"✅ Passed: {passed}")
-    print(f"❌ Failed: {failed}")
-    print(f"📈 Success Rate: {passed/(passed+failed)*100:.1f}%")
-    
-    if failed == 0:
-        print()
-        print("🎉 ALL PLACEHOLDERS HAVE BEEN SUCCESSFULLY IMPLEMENTED!")
-        print("🎯 The application is fully functional with:")
-        print("   • Complete invoice management (create, edit, delete)")
-        print("   • Complete product management")
-        print("   • Complete customer management")
-        print("   • Complete supplier management")
-        print("   • Professional form dialogs")
-        print("   • Full keyboard navigation")
-        print("   • Real-time status updates")
-        print()
-        print("🚀 Ready for production use!")
-        print("💡 Run 'python launch_app.py' to start the application")
-        return 0
-    else:
-        print()
-        print("⚠️ Some tests failed. Please check the output above.")
-        return 1
+    for name in required_methods:
+        assert hasattr(window, name)
 
-if __name__ == "__main__":
-    sys.exit(main())
+
+def test_management_pages(app):
+    """Management pages instantiate without errors."""
+    assert ProductListPage() is not None
+    assert PartnerListPage("customer") is not None
+    assert PartnerListPage("supplier") is not None
+    assert InvoiceListPage() is not None

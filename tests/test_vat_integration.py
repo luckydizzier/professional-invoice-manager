@@ -18,7 +18,7 @@ def test_application_launch_with_vat_summary():
         app = QApplication(sys.argv)
 
     main_window = MainWindow()
-    page = main_window.invoice_list_page
+    page = main_window.list_page
 
     # Simulate the original object hierarchy
     class Window:
