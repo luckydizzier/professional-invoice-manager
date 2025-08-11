@@ -17,7 +17,8 @@ def test_application_launch_with_vat_summary():
     if app is None:
         app = QApplication(sys.argv)
 
-    page = InvoiceListPage()
+    main_window = MainWindow()
+    page = main_window.invoice_list_page
 
     detail_widget = page.detail_widget
     assert hasattr(detail_widget, "vat_table")
