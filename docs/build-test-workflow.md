@@ -21,4 +21,6 @@ Execute the test suite:
 ```bash
 pytest
 ```
+Tests run against a temporary SQLite database provided by fixtures, so the
+repository's `invoice_qt5.db` remains untouched.
 
