@@ -1,0 +1,16 @@
+Title: docs: document connection parameter usage
+Body:
+Problem:
+Docstrings did not explain optional database connection parameter.
+Approach:
+Clarified how passing a connection affects `get_db` and `init_database`.
+Alternatives considered:
+Leave existing minimal documentation.
+Risk & mitigations:
+Caller-provided connections might be closed unintentionally; code now only closes when it creates the connection.
+Affected files:
+- src/professional_invoice_manager/db.py
+Test results (from COMMANDS.sh):
+- `python -m flake8 src tests`
+- `pytest tests` (fails: ImportError: cannot import name 'InvoiceDetailWidget')
+Refs: #000
