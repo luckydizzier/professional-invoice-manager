@@ -1,0 +1,5 @@
+Token/time assumptions:
+- Limited to single module edit and supporting artifacts.
+
+What was intentionally not changed:
+- No updates to other modules or tests.

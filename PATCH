@@ -1,0 +1,71 @@
+diff --git a/src/professional_invoice_manager/db.py b/src/professional_invoice_manager/db.py
+index 05bcf9a..4c66713 100644
+--- a/src/professional_invoice_manager/db.py
++++ b/src/professional_invoice_manager/db.py
+@@ -1,21 +1,50 @@
+ """Database utilities for Professional Invoice Manager."""
+ 
+ import sqlite3
++from typing import Optional
+ 
+ from professional_invoice_manager.config import config
+ 
+ 
+-def get_db():
+-    """Get database connection."""
+-    db_path = config.get("database.path", "invoice_qt5.db")
+-    conn = sqlite3.connect(db_path)
++def get_db(
++    connection: Optional[sqlite3.Connection] = None,
++) -> sqlite3.Connection:
++    """Return a database connection.
++
++    Parameters
++    ----------
++    connection:
++        Optional existing :class:`sqlite3.Connection` to reuse. When provided,
++        it is returned after ensuring the ``row_factory`` is set to
++        :class:`sqlite3.Row`. If ``None`` (default), a new connection is opened
++        using the configured database path.
++    """
++    if connection is None:
++        db_path = config.get("database.path", "invoice_qt5.db")
++        conn = sqlite3.connect(db_path)
++    else:
++        conn = connection
+     conn.row_factory = sqlite3.Row
+     return conn
+ 
+ 
+-def init_database():
+-    """Initialize database with correct schema."""
+-    with get_db() as conn:
++def init_database(
++    connection: Optional[sqlite3.Connection] = None,
++) -> None:
++    """Initialize database schema and seed data.
++
++    Parameters
++    ----------
++    connection:
++        Optional :class:`sqlite3.Connection` to initialize. If provided, the
++        schema and seed records are applied to this connection and it remains
++        open for the caller to manage. When ``None`` (default), a
++        temporary connection is created via :func:`get_db` and closed
++        after initialization.
++    """
++    should_close = connection is None
++    conn = get_db(connection)
++    try:
+         conn.execute("PRAGMA foreign_keys=ON;")
+         conn.execute("PRAGMA journal_mode=WAL;")
+         conn.execute("PRAGMA synchronous=NORMAL;")
+@@ -92,5 +121,7 @@ def init_database():
+                 "VALUES(?,?,?,?)",
+                 partners,
+             )
+-
+         conn.commit()
++    finally:
++        if should_close:
++            conn.close()
